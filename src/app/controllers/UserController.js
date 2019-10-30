@@ -24,9 +24,13 @@ class UserController {
         .status(401)
         .json({ error: `User ${req.body.email} already exists.` });
     }
-
-    const { id, name, email, provider } = await User.create(req.body);
-    return res.json({ id, name, email, provider });
+    try {
+      const { id, name, email, provider } = await User.create(req.body);
+      return res.json({ id, name, email, provider });
+    } catch (err) {
+      // return res.json(err);
+      return res.status(401).json({ error: 'User was not stored' });
+    }
   }
 
   async update(req, res) {
@@ -64,11 +68,13 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match.' });
     }
 
-    const { id, name, provider } = await user.update(req.body);
-    console.log(
-      `id: ${id}, name: ${name}, email: ${email},provider:${provider} `
-    );
-    return res.json({ id, name, email, provider });
+    try {
+      const { id, name, provider } = await user.update(req.body);
+      return res.json({ id, name, email, provider });
+    } catch (err) {
+      // return res.json(err);
+      return res.status(401).json({ error: 'User was not updated' });
+    }
   }
 }
 export default new UserController();
