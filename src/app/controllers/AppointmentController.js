@@ -55,6 +55,11 @@ class AppointmentController {
 
     const { provider_id, date } = req.body;
 
+    if (provider_id === req.userId) {
+      return res
+        .status(400)
+        .json({ error: 'User can not do appointment to himself' });
+    }
     /**
      * Check if provider_id is a provider
      */
@@ -107,7 +112,7 @@ class AppointmentController {
       const user = await User.findByPk(req.userId);
       const formattedDate = format(
         hourStart,
-        "'dia' dd 'de' mmmm', às' H:mm'h'",
+        "'dia' dd 'de' MMMM', às' H:mm'h'",
         { locale: pt }
       );
 
